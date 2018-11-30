@@ -1,0 +1,19 @@
+{
+  "name": "sewage_bot",
+  "version": "0.0.1",
+  "description": "A webscraper / twitter poster that scrapes a VT Government website for sewage leaks and posts updates to Twitter with the Twitter api",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "Sewage_Bot"
+  ],
+  "author": "Ben Ventura Benjamin.Ventura@uvm.edu",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "1.0.0-rc.2",
+    "puppeteer": "1.10.0",
+    "request-promise": "4.2.2"
+  }
+}
