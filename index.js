@@ -8,8 +8,8 @@ var filename = 'posts/reviewed.json';
 function runServer() {
     html.loadPosts(url, function(posts) {
         var data = postJSON.parsePosts(posts);
-        postsIO.savePosts(filename, data, function(newPosts) {
-            console.log("Saved");
+        postsIO.savePosts(filename, data, function(newPosts, err) {
+            if(err) throw err;
         });
     });
 }
