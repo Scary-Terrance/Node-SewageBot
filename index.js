@@ -2,27 +2,33 @@
 var html = require("./postLoad.js");
 var postJSON = require("./postsJSON.js");
 var postsIO = require("./postsIO.js");
+var postsTweet = require("./postsTweet.js");
+var postsLog = require("./postsLog.js");
 var url = 'https://anrweb.vt.gov/DEC/WWInventory/SewageOverflows.aspx';
-var postname = 'posts/reviewed.json';
-var alertname = 'posts/alerts.json';
+var post_name = 'posts/reviewed.json';
+var alert_name = 'posts/alerts.json';
 
-function runServer() {
-    html.loadPosts(url, function(posts, alerts) {
-        var data = postJSON.parsePosts(posts);
-        var alerts_data = postJSON.parseAlerts(alerts);
-        postsIO.savePosts(postname, data, function(newPosts, err) {
-            if(err) throw err;
-            if(newPosts && newPosts.posts.length >= 1) {
-                console.log("Success posts, post to Twitter");
-            } 
+function updatePosts() {
+    try {
+        html.loadPosts(url, function(posts, alerts) {
+            var data = postJSON.parsePosts(posts);
+            var alerts_data = postJSON.parseAlerts(alerts);
+            postsIO.savePosts(post_name, data, function(newPosts, err) {
+                if(err) throw err;
+                if(newPosts && newPosts.posts.length >= 1) {
+                    postsTweet.tweet_post(newPosts);
+                } 
+            });
+            postsIO.savePosts(alert_name, alerts_data, function(newAlerts, err) {
+                if(err) throw err;
+                if(newAlerts && newAlerts.posts.length >= 1) {
+                    postsTweet.tweet_alert(newAlerts);
+                }
+            });
         });
-        postsIO.savePosts(alertname, alerts_data, function(newAlerts, err) {
-            if(err) throw err;
-            if(newAlerts && newAlerts.posts.length >= 1) {
-                console.log("Success alerts, post to Twitter");
-            }
-        });
-    })
+    } catch(err) {
+        postsLog.posts_log("Error updating posts: " + err);
+    }
 }
 
-runServer();
+updatePosts();

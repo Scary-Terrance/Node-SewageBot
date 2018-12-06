@@ -1,10 +1,11 @@
 // Clean up posts with missing data points
 function check_forData(post, index) {
     var data = "";
-    this_post = post[index];
+    var this_post = post[index];
 
     // Clean the data
-    clean_post = this_post.replace(String.fromCharCode(160), " ");
+    var clean_post = this_post.replace(String.fromCharCode(160), " ");
+    clean_post = this_post.replace(String.fromCharCode(10), " ");
     clean_post = this_post.replace("\n", " ");
     clean_post = clean_post.trim();
 

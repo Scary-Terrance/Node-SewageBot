@@ -1,8 +1,10 @@
 const rp = require('request-promise');
 const cheerio = require('cheerio');
+var postsLog = require('./postsLog.js');
 
 exports.loadPosts = function(url, callback) {
-    rp(url).then(function (html) {
+    rp(url).then(function (html, err) {
+        if(err) throw err;
         // Process the HTML
         const $ = cheerio.load(html);
 
@@ -46,9 +48,7 @@ exports.loadPosts = function(url, callback) {
 
         console.log("Successfully loaded posts");
         callback(posts, alerts);
-    })
-    .catch(function (err) {
-        // Crawling failed...
-        console.log("Error Parsing Webpage: " + err);
+    }).catch(function(err) {
+        postsLog.posts_log("Error parsing webpage: " + err);
     });
 };
