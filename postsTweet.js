@@ -7,6 +7,8 @@ var client = new Twitter({
     access_token_secret:    process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
+post_tweets = false;
+
 function check(data) {
     if(data == "") {
         return false;
@@ -45,11 +47,13 @@ function format_post(post) {
 exports.tweet_post = function(in_posts) {
     in_posts.posts.forEach(function(post) {
         var tweet = format_post(post);
-        postsLog.posts_log(tweet);
-        client.post('statuses/update', {status: tweet},  function(error, tweet_body, response) {
-            if(error) throw error;
-            console.log("Submitted Post Tweet");
-        });
+        postsLog.posts_log(tweet, 'logs/posts.txt');
+        if(post_tweets) {
+            client.post('statuses/update', {status: tweet},  function(error, tweet_body, response) {
+                if(error) throw error;
+                postsLog.posts_log(tweet, 'logs/posts.txt');
+            });
+        }
     });
 };
 

@@ -1,0 +1,1 @@
+watch -n 600 node index.js

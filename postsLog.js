@@ -15,17 +15,24 @@ function check_file(filename) {
     }
 }
 
-function append_log(filename, data) {
+function append_log(filename, data, callback) {
     var logStream = fs.createWriteStream(filename, {'flags': 'a'});
-    logStream.write(data);
-    logStream.end('\n');
+    logStream.write(data + '\n');
+    logStream.end('');
+    logStream.on('close', function() {
+        callback();
+    })
 }
 
-exports.posts_log = function(data) {
+exports.posts_log = function(data, filename) {
+    if(!filename) {
+        var filename = generate_file_date();
+    }
     // Load the current time
     var time = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
     var log = time + ": " + data;
-    filename = generate_file_date();
     check_file(filename);
-    append_log(filename, log);
+    append_log(filename, log, function() {
+        console.log("Saved new Tweet");
+    });
 };
