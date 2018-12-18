@@ -7,7 +7,7 @@ var client = new Twitter({
     access_token_secret:    process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
-post_tweets = false;
+post_tweets = true;
 
 function check(data) {
     if(data == "") {
@@ -47,12 +47,14 @@ function format_post(post) {
 exports.tweet_post = function(in_posts) {
     in_posts.posts.forEach(function(post) {
         var tweet = format_post(post);
-        postsLog.posts_log(tweet, 'logs/posts.txt');
         if(post_tweets) {
             client.post('statuses/update', {status: tweet},  function(error, tweet_body, response) {
                 if(error) throw error;
                 postsLog.posts_log(tweet, 'logs/posts.txt');
             });
+        }
+        else {
+            postsLog.posts_log(tweet, 'logs/posts.txt');
         }
     });
 };
@@ -81,10 +83,14 @@ function format_alert(alert) {
 exports.tweet_alert = function(alerts) {
     alerts.posts.forEach(function(alert) {
         var tweet = format_alert(alert);
-        postsLog.posts_log(tweet);
-        client.post('statuses/update', {status: tweet},  function(error, tweet_body, response) {
-            if(error) throw error;
-            console.log("Submitted Alert Tweet");
-        });
+        if(post_tweets) {
+            client.post('statuses/update', {status: tweet},  function(error, tweet_body, response) {
+                if(error) throw error;
+                postsLog.posts_log(tweet, 'logs/posts.txt');
+            });
+        }
+        else {
+            postsLog.posts_log(tweet, 'logs/posts.txt');
+        }
     });
 };
